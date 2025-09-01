@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Postman Demo</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="main">
+    
+    <header class="header">
+      <h1 class="logo">Postmanification</h1>
+    </header>
+
+    <section class="form-section">
+      <form id="apiForm" class="form">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" placeholder="Enter Username Here" required>
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" placeholder="Enter Password Here" required>
+
+        <label for="method">HTTP Method:</label>
+        <select id="method" name="method" required>
+          <option value="GET">GET</option>
+          <option value="POST" selected>POST</option>
+          <option value="PATCH">PATCH</option>
+          <option value="DELETE">DELETE</option>
+        </select>
+
+        <label for="endpoint">Endpoint:</label>
+        <input type="text" id="endpoint" name="endpoint" placeholder="e.g. /users" required>
+
+        <button type="submit" class="btn">Send</button>
+      </form>
+
+      <div id="response" class="link"></div>
+    </section>
+  </div>
+
+  <script>
+    const form = document.getElementById("apiForm");
+    const responseDiv = document.getElementById("response");
+    const baseUrl = "https://fordemo-ot4j.onrender.com";
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const username = document.getElementById("username").value;
+      const password = document.getElementById("password").value;
+      const method = document.getElementById("method").value;
+      const endpoint = document.getElementById("endpoint").value.trim();
+
+      let url = baseUrl + endpoint;
+
+      let options = { 
+        method, 
+        headers: { "Content-Type": "application/json" } 
+      };
+
+      if (method !== "GET") {
+        options.body = JSON.stringify({ username, password });
+      }
+
+      try {
+        const res = await fetch(url, options);
+        const text = await res.text(); 
+        let data;
+        try {
+          data = JSON.parse(text);
+        } catch {
+          data = text; 
+        }
+        responseDiv.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+      } catch (err) {
+        responseDiv.innerHTML = `<span style="color:red;">Error: ${err.message}</span>`;
+      }
+    });
+  </script>
+</body>
+</html>
