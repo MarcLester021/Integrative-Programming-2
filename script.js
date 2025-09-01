@@ -12,21 +12,16 @@ form.addEventListener("submit", async (e) => {
 
   let url = baseUrl + endpoint;
 
-  // Default fetch options
   let options = { 
     method,
     headers: { "Content-Type": "application/json" }
   };
 
-  // Decide when to attach a request body
   if (method === "POST") {
     options.body = JSON.stringify({ username, password });
   } else if (method === "PATCH") {
     options.body = JSON.stringify({ username, password }); 
-    // 👆 adjust fields depending on what your API expects to be updated
   }
-  // For DELETE: many APIs don’t need a body, so skip it
-  // For GET: body is not allowed (your code already handles this)
 
   try {
     const res = await fetch(url, options);
